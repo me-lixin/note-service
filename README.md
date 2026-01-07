@@ -27,7 +27,8 @@
 
 ### 2. 笔记管理
 - CRUD（创建、读取、更新、删除）
-- 分类管理（可选）
+- 分类管理
+- 笔记分享(包含下载)
 - 导入文件（Markdown、Word、文本文件）
 - 全文检索（支持 title 和 content）
 
@@ -171,25 +172,49 @@ Response:
 
 ## 四、数据结构
 
-### Note 表
-| 字段        | 类型       | 说明             |
-|------------|-----------|----------------|
-| id         | bigint    | 笔记ID         |
-| user_id    | bigint    | 所属用户ID     |
-| category_id| bigint    | 分类ID         |
-| title      | varchar   | 标题           |
-| content    | text      | 内容           |
-| create_time| datetime  | 创建时间       |
-| update_time| datetime  | 更新时间       |
+### note 表
+| 字段          | 类型           | 说明   | 备注                     |
+| ----------- | ------------ | ---- | ---------------------- |
+| id          | bigint       | 笔记ID | 主键，自增                  |
+| user_id     | bigint       | 所属用户 | 建立索引 `idx_user_id`     |
+| category_id | bigint       | 所属分类 | 建立索引 `idx_category_id` |
+| title       | varchar(255) | 标题   | 支持 FULLTEXT 检索         |
+| content     | text         | 内容   | 支持 FULLTEXT 检索         |
+| create_time | datetime     | 创建时间 | 默认当前时间                 |
+| update_time | datetime     | 更新时间 | 默认当前时间，更新时自动修改         |
 
-### NoteShare 表
-| 字段        | 类型       | 说明             |
-|------------|-----------|----------------|
-| id         | bigint    | 分享ID         |
-| note_id    | bigint    | 对应笔记ID     |
-| share_code | varchar   | 分享码         |
-| expire_time| datetime  | 过期时间       |
-| view_count | int       | 浏览次数       |
+### note_share 表
+| 字段               | 类型           | 说明     | 备注                |
+| ---------------- | ------------ | ------ | ----------------- |
+| id               | bigint       | 分享ID   | 主键，自增             |
+| note_id          | bigint       | 对应笔记ID | -                 |
+| share_code       | varchar(64)  | 分享码    | 唯一索引 `share_code` |
+| title_snapshot   | varchar(255) | 笔记标题快照 | 可为空               |
+| content_snapshot | longtext     | 笔记内容快照 | 不为空               |
+| expire_time      | datetime     | 分享过期时间 | 可为空               |
+| view_count       | int          | 浏览次数   | 默认 0              |
+| create_time      | datetime     | 创建时间   | -                 |
+
+### note_category 表（笔记分类表）
+| 字段          | 类型          | 说明                | 备注                                     |
+| ----------- | ----------- | ----------------- | -------------------------------------- |
+| id          | bigint      | 分类ID              | 主键，自增                                  |
+| user_id     | bigint      | 所属用户ID            | -                                      |
+| parent_id   | bigint      | 父级ID，0表示一级分类      | 建立索引 `idx_parent`                      |
+| level       | tinyint     | 层级：1-一级，2-二级，3-三级 | 建立索引 `idx_level`                       |
+| name        | varchar(64) | 分类名称              | parent_id + name 唯一约束 `uk_parent_name` |
+| create_time | datetime    | 创建时间              | 默认当前时间                                 |
+| update_time | datetime    | 更新时间              | 默认当前时间，更新时自动修改                         |
+
+### user 表（用户表）
+| 字段          | 类型           | 说明       | 备注              |
+| ----------- | ------------ | -------- | --------------- |
+| id          | bigint       | 用户ID     | 主键，自增           |
+| nickname    | varchar(64)  | 昵称       | 可为空             |
+| username    | varchar(64)  | 用户名      | 唯一索引 `username` |
+| password    | varchar(128) | 密码（加密存储） | 不为空             |
+| create_time | datetime     | 创建时间     | 默认当前时间          |
+
 
 ---
 
