@@ -29,11 +29,11 @@ public class AuthServiceImpl {
         return JwtUtil.generateToken(user.getId());
     }
 
-    public void register(User req) {
+    public Integer register(User req) {
         List<User> users = userMapper.selectList(new LambdaQueryWrapper<User>()
                 .eq(User::getUsername, req.getUsername()));
         if (users.isEmpty()){
-            userMapper.insert(req);
+           return userMapper.insert(req);
         }else {
             throw new RuntimeException("用户已经存在!");
         }

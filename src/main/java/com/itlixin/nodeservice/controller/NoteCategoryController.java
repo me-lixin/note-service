@@ -2,6 +2,7 @@ package com.itlixin.nodeservice.controller;
 
 import com.itlixin.nodeservice.dto.resp.NoteCategoryTree;
 import com.itlixin.nodeservice.dto.resp.Result;
+import com.itlixin.nodeservice.entity.Note;
 import com.itlixin.nodeservice.entity.NoteCategory;
 import com.itlixin.nodeservice.service.NoteCategoryServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Note 分类API
+ */
 @RestController
 @RequestMapping("/api/category")
 @RequiredArgsConstructor
@@ -16,22 +20,25 @@ public class NoteCategoryController {
 
     private final NoteCategoryServiceImpl noteCategoryService;
 
-    /**
-     * 获取分类树
-     * 前端：页面初始化 / 新建笔记时调用
-     */
     @GetMapping("/tree")
     public Result<List<NoteCategoryTree>> tree() {
         return Result.ok(noteCategoryService.getTree());
     }
 
-    /**
-     * 新增分类
-     */
     @PostMapping
-    public Result<Void> create(@RequestBody NoteCategory category) {
-        noteCategoryService.create(category);
-        return Result.ok();
+    public Result<Integer> create(@RequestBody NoteCategory category) {
+        return Result.ok(noteCategoryService.create(category));
+    }
+
+    @PutMapping
+    public Result<Integer> update(@RequestBody NoteCategory category) {
+        return Result.ok(noteCategoryService.update(category));
+    }
+
+    @DeleteMapping("/{id}")
+    public Result<Integer> delete(@PathVariable Long id,
+                                  @RequestAttribute("userId") Long userId) {
+        return Result.ok(noteCategoryService.delete(id, userId));
     }
 }
 

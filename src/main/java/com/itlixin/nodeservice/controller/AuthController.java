@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 鉴权接口
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -22,9 +25,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public Result<Void> register(@RequestBody User req) {
-        authService.register(req);
-        return Result.ok();
+    public Result<Integer> register(@RequestBody User req) {
+        return Result.ok(authService.register(req));
     }
 }
 

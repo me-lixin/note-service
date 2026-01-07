@@ -20,10 +20,11 @@ public class NoteCategory {
 
     /** 分类名称 */
     private String name;
-
+    private Long userId;
 
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
 }
 
