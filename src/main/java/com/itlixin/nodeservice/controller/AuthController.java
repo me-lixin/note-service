@@ -1,6 +1,7 @@
 package com.itlixin.nodeservice.controller;
 
 import com.itlixin.nodeservice.dto.resp.Result;
+import com.itlixin.nodeservice.dto.rqs.UserRequest;
 import com.itlixin.nodeservice.entity.User;
 import com.itlixin.nodeservice.service.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,12 @@ public class AuthController {
     private final AuthServiceImpl authService;
 
     @PostMapping("/login")
-    public Result<String> login(@RequestBody User req) {
+    public Result<User> login(@RequestBody UserRequest req) {
         return Result.ok(authService.login(req.getUsername(), req.getPassword()));
     }
 
     @PostMapping("/register")
-    public Result<Integer> register(@RequestBody User req) {
+    public Result<Integer> register(@RequestBody UserRequest req) {
         return Result.ok(authService.register(req));
     }
 }

@@ -25,10 +25,6 @@ public class NoteCategoryController {
         return Result.ok(noteCategoryService.getTree());
     }
 
-    @PostMapping
-    public Result<Integer> create(@RequestBody NoteCategory category) {
-        return Result.ok(noteCategoryService.create(category));
-    }
 
     @PutMapping
     public Result<Integer> update(@RequestBody NoteCategory category) {
@@ -36,9 +32,8 @@ public class NoteCategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public Result<Integer> delete(@PathVariable Long id,
-                                  @RequestAttribute("userId") Long userId) {
-        return Result.ok(noteCategoryService.delete(id, userId));
+    public Result<Integer> delete(@PathVariable Long id) {
+        return Result.ok(noteCategoryService.delete(id));
     }
 }
 

@@ -8,7 +8,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private static final String SECRET = "note-secret-key";
-    private static final long EXPIRE = 1000 * 60 * 60 * 1;
+    private static final long EXPIRE = 1000 * 60 * 60 * 2400;
 
     public static String generateToken(Long userId) {
         return Jwts.builder()

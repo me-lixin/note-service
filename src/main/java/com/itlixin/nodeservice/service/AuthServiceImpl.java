@@ -1,7 +1,7 @@
 package com.itlixin.nodeservice.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.itlixin.nodeservice.dto.rqs.UserRequest;
 import com.itlixin.nodeservice.entity.User;
 import com.itlixin.nodeservice.mapper.UserMapper;
 import com.itlixin.nodeservice.utils.JwtUtil;
@@ -16,24 +16,31 @@ public class AuthServiceImpl {
 
     private final UserMapper userMapper;
 
-    public String login(String username, String password) {
+    public User login(String username, String password) {
         User user = userMapper.selectOne(
                 new LambdaQueryWrapper<User>()
                         .eq(User::getUsername, username)
         );
 
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null) {
+            throw new RuntimeException("用户名不存在,请先注册");
+        }
+        if (!user.getPassword().equals(password)) {
             throw new RuntimeException("用户名或密码错误");
         }
-
-        return JwtUtil.generateToken(user.getId());
+        user.setToken(JwtUtil.generateToken(user.getId()));
+        return user;
     }
 
-    public Integer register(User req) {
+    public Integer register(UserRequest req) {
         List<User> users = userMapper.selectList(new LambdaQueryWrapper<User>()
                 .eq(User::getUsername, req.getUsername()));
         if (users.isEmpty()){
-           return userMapper.insert(req);
+            User user = new User();
+            user.setUsername(req.getUsername());
+            user.setPassword(req.getPassword());
+            user.setNickname(req.getNickname());
+            return userMapper.insert(user);
         }else {
             throw new RuntimeException("用户已经存在!");
         }

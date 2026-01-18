@@ -27,23 +27,26 @@ public class NoteController {
 
     @GetMapping("/list")
     public Result<IPage<Note>> list(@RequestParam Long categoryId,
-                                   @RequestAttribute("userId") Long userId,
                                    @RequestParam(value = "current", defaultValue = "1") int current,
                                    @RequestParam(value = "size", defaultValue = "10") int size
 
     ) {
-        return Result.ok(noteService.listPage(userId,categoryId,current,size));
+        return Result.ok(noteService.listPage(categoryId,current,size));
     }
 
     @GetMapping("/{id}")
-    public Result<Note> get(@PathVariable Long id,
-                            @RequestAttribute("userId") Long userId) {
-        return Result.ok(noteService.getNode(id, userId));
+    public Result<Note> get(@PathVariable Long id) {
+        return Result.ok(noteService.getNode(id));
     }
 
     @PutMapping
-    public Result<Integer> update(@RequestBody Note req) {
+    public Result<Long> update(@RequestBody Note req) {
         return Result.ok(noteService.update(req));
+    }
+
+    @PutMapping("/move")
+    public Result<Integer> move(@RequestBody Note req) {
+        return Result.ok(noteService.move(req));
     }
 
     @DeleteMapping("/{ids}")
@@ -53,20 +56,18 @@ public class NoteController {
 
     @GetMapping("/search")
     public Result<IPage<Note>> search(@RequestParam("keyword") String keyword,
-                                      @RequestAttribute("userId") Long userId,
                                       @RequestParam(value = "current", defaultValue = "1") int current,
                                       @RequestParam(value = "size", defaultValue = "10") int size
     ) {
 
-        return Result.ok(noteService.search(keyword, userId,current,size));
+        return Result.ok(noteService.search(keyword,current,size));
     }
 
     @PostMapping("/import")
     public Result<Long> importNote(@RequestParam("file") MultipartFile file,
-                                   @RequestParam("categoryId") Long categoryId,
-                                   @RequestAttribute("userId") Long userId) {
+                                   @RequestParam("categoryId") Long categoryId) {
 
-        Long noteId = noteService.importFile(file, categoryId, userId);
+        Long noteId = noteService.importFile(file, categoryId);
         return Result.ok(noteId);
     }
 }

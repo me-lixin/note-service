@@ -9,7 +9,7 @@ public class TreeBuilder {
 
     private TreeBuilder() {}
 
-    public static List<NoteCategoryTree> build(List<NoteCategory> categories) {
+    public static List<NoteCategoryTree> build(List<NoteCategory> categories, Map<Long, Long> longIntegerMap) {
 
         Map<Long, NoteCategoryTree> nodeMap = new HashMap<>();
         List<NoteCategoryTree> roots = new ArrayList<>();
@@ -17,9 +17,12 @@ public class TreeBuilder {
         // 1. entity -> node
         for (NoteCategory category : categories) {
             NoteCategoryTree node = new NoteCategoryTree();
+
             node.setId(category.getId());
             node.setName(category.getName());
             node.setLevel(category.getLevel());
+            node.setCount(longIntegerMap.get(node.getId()));
+            node.setParentId(category.getParentId());
             nodeMap.put(category.getId(), node);
         }
 

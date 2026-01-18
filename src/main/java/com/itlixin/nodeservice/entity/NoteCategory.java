@@ -1,6 +1,10 @@
 package com.itlixin.nodeservice.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +14,7 @@ import java.time.LocalDateTime;
 public class NoteCategory {
 
     /** 分类ID */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /** 父级ID，0为根节点 */
@@ -21,6 +26,7 @@ public class NoteCategory {
     /** 分类名称 */
     private String name;
     private Long userId;
+    private Integer sort;
 
     private LocalDateTime createTime;
 

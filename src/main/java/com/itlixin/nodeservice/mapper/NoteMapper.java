@@ -3,25 +3,26 @@ package com.itlixin.nodeservice.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.itlixin.nodeservice.dto.CategoryCountDTO;
 import com.itlixin.nodeservice.entity.Note;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Mapper
 public interface NoteMapper extends BaseMapper<Note> {
+
     @Select(
-            "SELECT * " +
+            "SELECT category_id AS categoryId, " +
+                    "       COUNT(*) AS cnt " +
                     "FROM note " +
-                    "WHERE user_id = #{userId} " +
-                    "AND MATCH(title, content) " +
-                    "AGAINST (#{keyword} IN NATURAL LANGUAGE MODE) " +
-                    "ORDER BY update_time DESC"
+                    "GROUP BY category_id"
     )
-    IPage<Note> search(Page<Note> page,
-                       @Param("userId") Long userId,
-                       @Param("keyword") String keyword);
+    List<CategoryCountDTO> countByCategory();
 }
 
