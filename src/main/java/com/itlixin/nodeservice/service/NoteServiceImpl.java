@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itlixin.nodeservice.dto.CategoryCountDTO;
 import com.itlixin.nodeservice.entity.Note;
+import com.itlixin.nodeservice.entity.NoteCategory;
+import com.itlixin.nodeservice.mapper.NoteCategoryMapper;
 import com.itlixin.nodeservice.mapper.NoteMapper;
 import com.itlixin.nodeservice.utils.FileParseUtil;
 import com.itlixin.nodeservice.utils.LoginUserUtil;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class NoteServiceImpl {
 
     private final NoteMapper noteMapper;
+    private final NoteCategoryMapper categoryMapper;
 
     public Integer create(Note note) {
         return noteMapper.insert(note);
@@ -40,7 +43,7 @@ public class NoteServiceImpl {
     }
     public IPage<Note> listPage(Long categoryId, int current, int size) {
         Page<Note> page = new Page<>(current, size);
-
+        NoteCategory noteCategory = categoryMapper.selectById(categoryId);
         LambdaQueryWrapper<Note> queryWrapper = new LambdaQueryWrapper<Note>()
                 .select(
                         Note::getId,Note::getCategoryId,Note::getUserId,
@@ -48,7 +51,7 @@ public class NoteServiceImpl {
                         Note::getUpdateTime
                 )
                 .eq(Note::getUserId, LoginUserUtil.getUserId())
-                .eq(categoryId != null,Note::getCategoryId, categoryId)
+                .eq(noteCategory.getLevel() != 1,Note::getCategoryId, categoryId)
                 .orderByDesc(Note::getUpdateTime);
 
         return noteMapper.selectPage(page, queryWrapper);
