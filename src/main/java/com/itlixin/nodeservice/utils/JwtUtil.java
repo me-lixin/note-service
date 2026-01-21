@@ -3,12 +3,13 @@ package com.itlixin.nodeservice.utils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import java.time.Duration;
 import java.util.Date;
 
 public class JwtUtil {
 
     private static final String SECRET = "note-secret-key";
-    private static final long EXPIRE = 1000 * 60 * 60 * 2400;
+    private static final long EXPIRE = Duration.ofDays(1000).toMillis();
 
     public static String generateToken(Long userId) {
         return Jwts.builder()

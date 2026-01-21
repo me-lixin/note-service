@@ -13,6 +13,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public Result<Void> handle(RuntimeException e) {
         e.printStackTrace();
-        return Result.fail(e.getMessage().length() > 20 ? "服务器异常,请稍后再试" : e.getMessage());
+        return Result.fail(e.getMessage().length() > 30 ? "服务器异常,请稍后再试" : e.getMessage());
     }
 }

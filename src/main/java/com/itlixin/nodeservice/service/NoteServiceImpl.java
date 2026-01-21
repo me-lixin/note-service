@@ -2,6 +2,7 @@ package com.itlixin.nodeservice.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itlixin.nodeservice.dto.CategoryCountDTO;
@@ -47,7 +48,7 @@ public class NoteServiceImpl {
                         Note::getUpdateTime
                 )
                 .eq(Note::getUserId, LoginUserUtil.getUserId())
-                .eq(Note::getCategoryId, categoryId)
+                .eq(categoryId != null,Note::getCategoryId, categoryId)
                 .orderByDesc(Note::getUpdateTime);
 
         return noteMapper.selectPage(page, queryWrapper);
@@ -69,22 +70,14 @@ public class NoteServiceImpl {
     }
 
     public Long update(Note note) {
-        getSummary(note);
         if(note.getId() == null){
             note.setUserId(LoginUserUtil.getUserId());
             create(note);
         }else {
+            note.setUpdateTime(LocalDateTime.now());
             noteMapper.updateById(note);
         }
         return note.getId();
-    }
-
-    private static void getSummary(Note note) {
-        note.setSummary(
-                note.getContent()
-                        .substring(0, Math.min(note.getContent().length(), 100))
-                        .replace(note.getTitle(),""));
-
     }
 
     public Integer delete(List<Long> ids) {
@@ -117,7 +110,6 @@ public class NoteServiceImpl {
         note.setCreateTime(LocalDateTime.now());
         note.setCategoryId(categoryId);
         note.setUserId(LoginUserUtil.getUserId());
-        getSummary(note);
         noteMapper.insert(note);
         return note.getId();
     }

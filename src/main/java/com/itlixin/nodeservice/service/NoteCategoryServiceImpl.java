@@ -11,6 +11,7 @@ import com.itlixin.nodeservice.utils.TreeBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -80,6 +81,7 @@ public class NoteCategoryServiceImpl {
             if (exist != null && exist.getId() != category.getId()){
                 throw new RuntimeException("目录已存在");
             }
+            category.setUpdateTime(LocalDateTime.now());
             return noteCategoryMapper.updateById(category);
         }
     }
@@ -100,7 +102,7 @@ public class NoteCategoryServiceImpl {
                 .map(NoteCategory::getId).collect(Collectors.toList());
         List<Note> notes = noteService.listByCategory(LoginUserUtil.getUserId(), ids);
         if (!notes.isEmpty()){
-            throw new RuntimeException("该目录或子目录下还有笔记,要删除请先清空笔记!");
+            throw new RuntimeException("该目录下还有笔记,请先转移笔记!");
         }
         return noteCategoryMapper.deleteBatchIds(ids);
     }

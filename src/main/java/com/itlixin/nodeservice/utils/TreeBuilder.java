@@ -13,15 +13,16 @@ public class TreeBuilder {
 
         Map<Long, NoteCategoryTree> nodeMap = new HashMap<>();
         List<NoteCategoryTree> roots = new ArrayList<>();
-
+        Long count = 0L;
         // 1. entity -> node
         for (NoteCategory category : categories) {
             NoteCategoryTree node = new NoteCategoryTree();
-
+            Long tmplCount = longIntegerMap.getOrDefault(category.getId(), 0L);
+            count += tmplCount;
             node.setId(category.getId());
             node.setName(category.getName());
             node.setLevel(category.getLevel());
-            node.setCount(longIntegerMap.get(node.getId()));
+            node.setCount(tmplCount);
             node.setParentId(category.getParentId());
             nodeMap.put(category.getId(), node);
         }
@@ -38,7 +39,7 @@ public class TreeBuilder {
                 }
             }
         }
-
+        roots.get(0).setCount(count);
         return roots;
     }
 }

@@ -26,7 +26,7 @@ public class NoteController {
     }
 
     @GetMapping("/list")
-    public Result<IPage<Note>> list(@RequestParam Long categoryId,
+    public Result<IPage<Note>> list(@RequestParam(required = false) Long categoryId,
                                    @RequestParam(value = "current", defaultValue = "1") int current,
                                    @RequestParam(value = "size", defaultValue = "10") int size
 
