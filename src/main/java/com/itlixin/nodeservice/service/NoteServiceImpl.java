@@ -73,6 +73,10 @@ public class NoteServiceImpl {
     }
 
     public Long update(Note note) {
+        String title = filterSpecialChars(note.getContent(),"\n",30);
+        note.setTitle(title);
+        String summary = filterSpecialChars(note.getContent(),null,180);
+        note.setSummary(summary);
         if(note.getId() == null){
             note.setUserId(LoginUserUtil.getUserId());
             create(note);
@@ -113,7 +117,9 @@ public class NoteServiceImpl {
         note.setCreateTime(LocalDateTime.now());
         note.setCategoryId(categoryId);
         note.setUserId(LoginUserUtil.getUserId());
-        noteMapper.insert(note);
+        String summary = filterSpecialChars(note.getContent(),null,180);
+        note.setSummary(summary);
+        create(note);
         return note.getId();
     }
 
@@ -126,6 +132,23 @@ public class NoteServiceImpl {
         Note note = noteMapper.selectById(req.getId());
         note.setCategoryId(req.getCategoryId());
         return noteMapper.updateById(note);
+    }
+    public static String filterSpecialChars(String str,String enter,int max) {
+
+        if (str == null) {
+            return null;
+        }
+        if (enter == null){
+            String text = str.substring(0, Math.min(str.length(), max));
+            return text.replaceAll("[^a-zA-Z0-9\\u4e00-\\u9fa5,，\\.。]", "");
+        } else {
+            int newlineIndex = str.indexOf(enter);
+            int end = newlineIndex == -1
+                    ? Math.min(str.length(), max)
+                    : Math.min(newlineIndex, max);
+            String text = str.substring(0, end);
+            return text.replaceAll("[^a-zA-Z0-9\\u4e00-\\u9fa5,，\\.。]", "");
+        }
     }
 }
 
