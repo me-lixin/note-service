@@ -24,6 +24,9 @@ public class NoteShareServiceImpl {
     // 创建分享
     public String createShare(Long noteId, Long userId, Duration expire, String prefix) {
         Note note = noteService.getNode(noteId);
+        if (note == null){
+            throw new RuntimeException("请先保存,再分享!");
+        }
         if (!note.getUserId().equals(userId)) {
             throw new RuntimeException("无权分享此笔记");
         }

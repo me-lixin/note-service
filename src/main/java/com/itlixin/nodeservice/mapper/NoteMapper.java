@@ -21,8 +21,9 @@ public interface NoteMapper extends BaseMapper<Note> {
             "SELECT category_id AS categoryId, " +
                     "       COUNT(*) AS cnt " +
                     "FROM note " +
+                    "WHERE user_id = #{userId} " +
                     "GROUP BY category_id"
     )
-    List<CategoryCountDTO> countByCategory();
+    List<CategoryCountDTO> countByCategory(@Param("userId") Long userId);
 }
 

@@ -32,7 +32,7 @@ public class NoteServiceImpl {
         return noteMapper.insert(note);
     }
     Map<Long, Long> countByCategory(){
-        List<CategoryCountDTO> count = noteMapper.countByCategory();
+        List<CategoryCountDTO> count = noteMapper.countByCategory(LoginUserUtil.getUserId());
         Map<Long, Long> countMap = count.stream()
                 .collect(Collectors.toMap(
                         CategoryCountDTO::getCategoryId,

@@ -30,6 +30,7 @@ public class NoteCategoryServiceImpl {
 
         List<NoteCategory> list = noteCategoryMapper.selectList(
                 new LambdaQueryWrapper<NoteCategory>()
+                        .eq(NoteCategory::getUserId,LoginUserUtil.getUserId())
                         .orderByDesc(NoteCategory::getUpdateTime)
                         .orderByAsc(NoteCategory::getParentId)
         );
