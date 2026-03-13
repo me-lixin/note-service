@@ -81,8 +81,14 @@ public class NoteServiceImpl {
             note.setUserId(LoginUserUtil.getUserId());
             create(note);
         }else {
-            note.setUpdateTime(LocalDateTime.now());
-            noteMapper.updateById(note);
+            Note oldNote = noteMapper.selectById(note.getId());
+            if (oldNote.getVersion() == note.getVersion()){
+                note.setUpdateTime(LocalDateTime.now());
+                note.setVersion(note.getVersion()+1);
+                noteMapper.updateById(note);
+            }else {
+                throw new RuntimeException("您在别的设备有新修改，请先重新加载内容！");
+            }
         }
         return note.getId();
     }

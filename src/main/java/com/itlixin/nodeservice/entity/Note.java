@@ -28,5 +28,7 @@ public class Note {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
+    private int version;
 }
 
