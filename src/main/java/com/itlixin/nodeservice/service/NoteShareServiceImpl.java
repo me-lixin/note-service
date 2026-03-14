@@ -31,31 +31,29 @@ public class NoteShareServiceImpl {
             throw new RuntimeException("无权分享此笔记");
         }
 
-        String shareCode = UUID.randomUUID().toString().replace("-", "");
         NoteShare noteShare = noteShareMapper.selectOne(new LambdaQueryWrapper<NoteShare>()
                 .eq(NoteShare::getNoteId, note.getId())
                 .eq(NoteShare::getUserId, LoginUserUtil.getUserId())
         );
         if (noteShare == null){
-            NoteShare share = new NoteShare();
-            share.setNoteId(noteId);
-            share.setTitleSnapshot(note.getTitle());
-            share.setUrl(prefix+shareCode);
-            share.setUserId(LoginUserUtil.getUserId());
-            share.setShareCode(shareCode);
-            share.setContentSnapshot(note.getContent());
-            share.setExpireTime(LocalDateTime.now().plus(expire));
-            share.setCreateTime(LocalDateTime.now());
-            share.setViewCount(0);
-            noteShareMapper.insert(share);
-        }else {
+            String shareCode = UUID.randomUUID().toString().replace("-", "");
+            noteShare = new NoteShare();
+            noteShare.setNoteId(noteId);
+            noteShare.setTitleSnapshot(note.getTitle());
             noteShare.setUrl(prefix+shareCode);
+            noteShare.setUserId(LoginUserUtil.getUserId());
             noteShare.setShareCode(shareCode);
+            noteShare.setContentSnapshot(note.getContent());
+            noteShare.setExpireTime(LocalDateTime.now().plus(expire));
+            noteShare.setCreateTime(LocalDateTime.now());
+            noteShare.setViewCount(0);
+            noteShareMapper.insert(noteShare);
+        }else {
             noteShare.setContentSnapshot(note.getContent());
             noteShare.setExpireTime(LocalDateTime.now().plus(expire));
             noteShareMapper.updateById(noteShare);
         }
-        return prefix+shareCode;
+        return noteShare.getUrl();
     }
 
     public NoteShare accessShare(String shareCode) {
